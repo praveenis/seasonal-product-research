@@ -18,7 +18,27 @@ Open `index.html` in a browser, or serve this folder with any static file server
 
 ## Data and publishing boundary
 
-Public demo content is maintained in HTML for this phase. The Python SQLite database, credentials, research history, and generated reports do not belong in this repository. Phase 2 is expected to add a validated, manually run exporter that writes approved public JSON and crawlable static pages. Do not publish generated or live records until their sources and editorial approval are checked.
+Public demo content remains maintained in HTML. Phase 2 adds a separate, manually run exporter for records that have passed source and editorial review. The Python SQLite database, credentials, research history, and generated reports do not belong in this repository. Never export raw engine output or live records without checking their sources and obtaining editorial approval.
+
+### Export approved research records
+
+1. Copy `tools/approved-products.example.json` to a private working location and replace the example with reviewed records. The exporter requires explicit editorial approval, a named approver, approval date, source URLs and access dates, a summary, research scope, and buying criteria.
+2. Validate without writing files:
+
+   ```powershell
+   python tools/export_approved_products.py C:\path\to\approved-products.json
+   ```
+
+3. After reviewing the input and approval, explicitly publish the public artifacts:
+
+   ```powershell
+   python tools/export_approved_products.py C:\path\to\approved-products.json --publish
+   ```
+
+   This writes `data/approved-products.json`, generates crawlable pages under `products/approved/`, and adds their canonical URLs to `sitemap.xml`. The exporter refuses to replace an unowned existing page. It does not add records to the demo catalog or publish prices, retailer offers, affiliate links, sales claims, or availability.
+4. Inspect the JSON, each generated page, and sitemap changes before deployment. Remove or correct rejected records in the reviewed input and rerun the exporter; delete obsolete generated pages and their sitemap URLs manually after editorial review.
+
+The schema is intentionally narrow. Every source URL must use HTTPS. All generated content is HTML-escaped, and outbound source links use `rel="noopener noreferrer"`. Search demand, listing counts, favorites, and social engagement must not be described as sales evidence. Prices, offers, product testing claims, and structured offer data remain out of scope until separately verified and editorially approved.
 
 There are currently no retailer offers or affiliate links. If approved links are introduced later, verify the relevant retailer and affiliate program requirements first, label monetized links near the link, use appropriate `rel="sponsored nofollow"`, and use `target="_blank"` only with `rel="noopener noreferrer"`.
 

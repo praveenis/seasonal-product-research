@@ -1,0 +1,29 @@
+{
+  "records": [
+    {
+      "slug": "example-seasonal-product",
+      "title": "Example seasonal product",
+      "category": "Home and kitchen",
+      "summary": "A short, evidence-based summary for a seasonal research topic.",
+      "description": "Explain the research scope and limits. Avoid claims about sales, product performance, or availability unless separately substantiated and approved.",
+      "seasons": ["winter", "holiday"],
+      "buying_criteria": [
+        "Compare material, dimensions, care instructions, and fit.",
+        "Verify any safety or performance claims against primary documentation."
+      ],
+      "research_questions": [
+        "What independent evidence would validate the most important buying criteria?"
+      ],
+      "sources": [
+        {
+          "name": "Primary source name",
+          "url": "https://example.org/research",
+          "accessed_on": "2026-01-15"
+        }
+      ],
+      "editorial_approved": true,
+      "editorial_approved_by": "Editor name or role",
+      "editorial_approved_on": "2026-01-16"
+    }
+  ]
+}
