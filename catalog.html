@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse five clearly labeled seasonal product research demos. Search by category and season; no demo offer or price is presented as real.">
+  <meta name="theme-color" content="#0c1715">
+  <link rel="canonical" href="https://sbrp.app/catalog.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Seasonal product ideas | SBRP">
+  <meta property="og:description" content="Explore five illustrative product research demos and practical seasonal categories.">
+  <meta property="og:url" content="https://sbrp.app/catalog.html">
+  <title>Seasonal product ideas | SBRP</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="catalog.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="index.html" aria-label="SBRP home"><span class="brand-mark">S</span><span>SBRP</span></a><nav class="nav" aria-label="Main navigation"><a href="index.html">Overview</a><a class="active" href="catalog.html">Product ideas</a><a href="guides/index.html">Guides</a><a href="google-ads.html">Research</a></nav></header>
+  <main>
+    <section class="sub-hero"><div class="sub-hero-copy"><p class="eyebrow"><span class="eyebrow-dot"></span> Public catalog · illustrative demos</p><h1>Seasonal product ideas.</h1><p class="hero-lede">These five examples demonstrate the catalog format. They are not verified listings, do not have retailer offers, and do not claim live prices or availability.</p></div><div class="api-badge"><span class="api-badge-mark">5</span><span><strong>Demo records</strong><small>No retailer offers or prices</small></span></div></section>
+    <section class="catalog-section container">
+      <div class="catalog-notice" role="note"><strong>Demo data:</strong> every product below is a research prompt for illustrating the experience. No retailer link, price, review, stock status, or testing claim is included.</div>
+      <form class="catalog-controls" role="search" onsubmit="return false">
+        <label class="search-field">Search product ideas<input id="catalog-search" type="search" autocomplete="off" placeholder="Try travel, kitchen, winter…" aria-controls="product-grid"></label>
+        <label>Category<select id="category-filter"><option value="all">All categories</option><option value="Home and kitchen">Home and kitchen</option><option value="Electronics">Electronics</option><option value="Travel">Travel</option><option value="Winter essentials">Winter essentials</option><option value="Holiday gifts">Holiday gifts</option></select></label>
+        <label>Season<select id="season-filter"><option value="all">All seasons</option><option value="winter">Winter</option><option value="holiday">Holiday</option><option value="spring">Spring</option><option value="summer">Summer</option><option value="year-round">Year-round</option></select></label>
+        <button class="button button-light" id="clear-filters" type="button">Clear filters</button>
+      </form>
+      <p id="result-count" class="result-count" aria-live="polite">Showing 5 demo product ideas</p>
+      <div class="product-grid" id="product-grid">
+        <article class="product-card" data-category="Winter essentials" data-season="winter"><p class="eyebrow">Demo · Winter essentials</p><h2><a href="products/windshield-snow-cover.html">Windshield snow cover</a></h2><p>A seasonal research prompt for a fitted exterior cover designed to reduce frost and snow buildup on a parked vehicle.</p><ul><li>Check vehicle fit and covered area</li><li>Compare attachment style and storage size</li><li>Verify weather durability and return terms</li></ul><p class="availability-note">Price and retailer offers: unavailable</p><a class="text-link dark-link" href="products/windshield-snow-cover.html">View demo research page →</a></article>
+        <article class="product-card" data-category="Home and kitchen" data-season="holiday winter"><p class="eyebrow">Demo · Home and kitchen</p><h2><a href="products/insulated-travel-mug.html">Insulated travel mug</a></h2><p>A year-round drinkware research prompt with extra gift-season relevance. Specifications and product claims require verification for any real item.</p><ul><li>Compare capacity and dimensions</li><li>Check lid cleaning and leak guidance</li><li>Look for documented insulation testing</li></ul><p class="availability-note">Price and retailer offers: unavailable</p><a class="text-link dark-link" href="products/insulated-travel-mug.html">View demo research page →</a></article>
+        <article class="product-card" data-category="Travel" data-season="summer year-round"><p class="eyebrow">Demo · Travel</p><h2><a href="products/packing-cube-set.html">Packing cube set</a></h2><p>A travel organization research prompt for comparing sizes, fabric, zippers, and compatibility with common luggage dimensions.</p><ul><li>Measure against your luggage</li><li>Compare fabric weight and seams</li><li>Check set contents and care instructions</li></ul><p class="availability-note">Price and retailer offers: unavailable</p><a class="text-link dark-link" href="products/packing-cube-set.html">View demo research page →</a></article>
+        <article class="product-card" data-category="Electronics" data-season="year-round holiday"><p class="eyebrow">Demo · Electronics</p><h2><a href="products/usb-c-charging-station.html">USB-C charging station</a></h2><p>An electronics comparison prompt. Port count alone is not enough: check total output, device compatibility, included cable, and safety certifications.</p><ul><li>Match power output to devices</li><li>Confirm protocols and port sharing</li><li>Verify applicable safety certification</li></ul><p class="availability-note">Price and retailer offers: unavailable</p><a class="text-link dark-link" href="products/usb-c-charging-station.html">View demo research page →</a></article>
+        <article class="product-card" data-category="Holiday gifts" data-season="holiday winter"><p class="eyebrow">Demo · Holiday gifts</p><h2><a href="products/reusable-gift-wrap-set.html">Reusable gift wrap set</a></h2><p>A holiday gifting research prompt. Compare material, dimensions, closures, care, and how well the set fits the recipient’s typical gifts.</p><ul><li>Check item dimensions and count</li><li>Review material and care details</li><li>Compare packaging and return window</li></ul><p class="availability-note">Price and retailer offers: unavailable</p><a class="text-link dark-link" href="products/reusable-gift-wrap-set.html">View demo research page →</a></article>
+      </div>
+      <p class="empty-state" id="empty-state" hidden>No demo ideas match these filters. Try a broader search.</p>
+      <div class="compare-box"><p class="eyebrow">Comparisons</p><h2>Retailer comparisons need verified offers.</h2><p>This demo catalog has no retailer data to compare. A future comparison will show only documented offers and will label missing prices as unavailable.</p></div>
+    </section>
+  </main>
+  <footer class="site-footer container"><div><a class="brand footer-brand" href="index.html"><span class="brand-mark">S</span><span>SBRP</span></a><p>Illustrative product research demos only.</p></div><div class="footer-links"><a href="about.html">About</a><a href="contact.html">Contact</a><a href="affiliate-disclosure.html">Affiliate disclosure</a><a href="privacy-policy.html">Privacy policy</a><a href="terms-of-service.html">Terms</a></div><p class="copyright">© 2026 SBRP</p></footer>
+  <script src="catalog.js" defer></script>
+</body>
+</html>
