@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": [
     "schema_version", "draft_id", "workflow_state", "created_at", "topic",
-    "audience", "market", "retailer", "affiliate_program", "affiliate_links_authorized",
+    "primary_query", "search_intent", "audience", "market", "retailer", "affiliate_program", "affiliate_links_authorized",
     "minimum_review_count", "ranking_method", "page_title", "slug", "summary", "intro",
     "methodology", "limitations", "recommendations", "excluded_candidates", "approval"
   ],
@@ -17,6 +17,8 @@
     "workflow_state": { "enum": ["pending_review", "revision_requested", "rejected", "approved"] },
     "created_at": { "type": "string", "format": "date-time" },
     "topic": { "type": "string", "minLength": 1 },
+    "primary_query": { "type": "string", "minLength": 1 },
+    "search_intent": { "type": "string", "minLength": 1 },
     "audience": { "type": "string", "minLength": 1 },
     "market": { "type": "string", "minLength": 1 },
     "retailer": { "type": "string", "minLength": 1 },
@@ -38,7 +40,7 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "brand", "product_name", "model", "retailer", "market", "rating",
+          "brand", "product_name", "model", "why_consider", "considerations", "retailer", "market", "rating",
           "rating_max", "review_count", "source_url", "checked_on", "affiliate_url",
           "evidence_status", "rank"
         ],
@@ -46,6 +48,8 @@
           "brand": { "type": "string", "minLength": 1 },
           "product_name": { "type": "string", "minLength": 1 },
           "model": { "type": "string", "minLength": 1 },
+          "why_consider": { "type": "string", "minLength": 1 },
+          "considerations": { "type": "string" },
           "retailer": { "type": "string", "minLength": 1 },
           "market": { "type": "string", "minLength": 1 },
           "rating": { "type": "number", "minimum": 0 },

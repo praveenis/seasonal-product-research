@@ -2,7 +2,7 @@
 
 **Type:** Website publishing workflow and static-site tooling  
 **Assignee:** Developer persona  
-**Status:** In progress — schema, exporter, and preflight foundation implemented  
+**Status:** In progress — schema, exporter, preflight, and source-supported candidate copy implemented; static preflight and synthetic package validation passed
 **Priority:** High for the first affiliate recommendation page  
 **Owner:** SBRP founder; final page approval required
 
@@ -81,6 +81,7 @@ The agent can prepare and render drafts. It cannot publish, deploy, change DNS, 
 - The exporter adds the approved page to sitemap/index navigation, preserves the demo catalog boundary, and does not overwrite unrelated files.
 - Static preflight catches missing evidence/disclosure, invalid links/metadata, and accidental publication of drafts.
 - The workflow works without retailer credentials or a live ratings API by accepting verified, owner-provided/imported evidence and labeling its provenance. No scraping is introduced.
+- Each candidate has a required source-supported reason for consideration and an optional source-supported considerations/trade-offs field; both appear in the private review and exported page.
 - README instructions explain the draft, approval, export, review, and deployment steps, including the manual steps and source limitations.
 
 ## Dependencies and open decisions

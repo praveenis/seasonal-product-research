@@ -45,7 +45,7 @@ The schema is intentionally narrow. Every source URL must use HTTPS. All generat
 Affiliate comparison pages use a separate package and exporter from the non-commercial research briefs above. The app's affiliate-page workflow accepts owner-supplied product evidence and only offers an approved package for download after the owner records approval. That package is a handoff; it does not publish or deploy a page.
 
 1. Review the downloaded JSON package, its product sources, ratings, review counts, authorization status, and approval record.
-2. From this repository, validate it without writing public files:
+2. From this repository, validate it without writing public files. The command lists each planned create/update target for review:
 
    ```powershell
    python tools/export_affiliate_page.py C:\path\to\approved-affiliate-page.json
@@ -59,7 +59,7 @@ Affiliate comparison pages use a separate package and exporter from the non-comm
 
    This writes the approved article page, generated comparison index/manifest, and sitemap entries. It does not deploy the site. Review every changed file and run the static preflight before a separate production release. Private drafts must remain outside this repository and its deploy root.
 
-The first workflow does not fetch retailer ratings or independently verify owner-entered evidence. Do not use Etsy favorites or search/listing popularity as ratings. Automated research requires a separately selected and authorized source.
+The first workflow does not fetch retailer ratings or independently verify owner-entered evidence. Every included candidate needs a source-supported reason for consideration; optional considerations/trade-offs must also be supported by the linked source. Do not use Etsy favorites or search/listing popularity as ratings. Automated research requires a separately selected and authorized source.
 
 There are currently no retailer offers or affiliate links. If approved links are introduced later, verify the relevant retailer and affiliate program requirements first, label monetized links near the link, use appropriate `rel="sponsored nofollow"`, and use `target="_blank"` only with `rel="noopener noreferrer"`.
 

@@ -71,7 +71,7 @@ def validate_package(payload: object) -> dict:
     if payload.get("schema_version") != 1:
         fail("Unsupported affiliate page schema_version.")
     allowed_fields = {
-        "schema_version", "draft_id", "workflow_state", "created_at", "topic", "audience",
+        "schema_version", "draft_id", "workflow_state", "created_at", "topic", "primary_query", "search_intent", "audience",
         "market", "retailer", "affiliate_program", "affiliate_links_authorized",
         "minimum_review_count", "ranking_method", "page_title", "slug", "summary", "intro",
         "methodology", "limitations", "recommendations", "excluded_candidates", "approval",
@@ -110,6 +110,8 @@ def validate_package(payload: object) -> dict:
         fail("Page content changed after approval; request a new owner review.")
 
     require_text(payload.get("topic"), "topic")
+    require_text(payload.get("primary_query"), "primary_query")
+    require_text(payload.get("search_intent"), "search_intent")
     title = require_text(payload.get("page_title"), "page_title")
     slug = require_text(payload.get("slug"), "slug")
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
@@ -147,13 +149,15 @@ def validate_package(payload: object) -> dict:
         if not isinstance(item, dict):
             fail(f"{where} must be an object.")
         allowed_candidate_fields = {
-            "brand", "product_name", "model", "retailer", "market", "rating", "rating_max",
+            "brand", "product_name", "model", "why_consider", "considerations", "retailer", "market", "rating", "rating_max",
             "review_count", "source_url", "checked_on", "affiliate_url", "evidence_status", "rank",
         }
         if set(item) - allowed_candidate_fields:
             fail(f"{where} contains unsupported fields.")
-        for field in ("brand", "product_name", "model", "retailer", "market"):
+        for field in ("brand", "product_name", "model", "why_consider", "retailer", "market"):
             require_text(item.get(field), f"{where}.{field}")
+        if not isinstance(item.get("considerations"), str):
+            fail(f"{where}.considerations must be a string.")
         brand_key = item["brand"].strip().casefold()
         if brand_key in seen_brands:
             fail(f"{where} repeats a brand; include one representative model per brand.")
@@ -225,6 +229,8 @@ def render_page(payload: dict) -> str:
         cards.append(f'''<article class="product-card">
 <p class="eyebrow">Option {int(item["rank"])} · {esc(item["brand"])}</p>
 <h2>{esc(item["product_name"])}</h2><p>Model: {esc(item["model"])}</p>
+<p><strong>Why consider it:</strong> {esc(item["why_consider"])}</p>
+{f'<p><strong>Considerations:</strong> {esc(item["considerations"])}</p>' if item["considerations"] else ""}
 <p><strong>Rating:</strong> {float(item["rating"]):g}/{float(item["rating_max"]):g} · 
 {int(item["review_count"]):,} reviews</p>
 <p class="availability-note">Rating source checked {esc(item["checked_on"])}. This is retailer-displayed evidence, not an SBRP product test.</p>
@@ -252,6 +258,8 @@ def render_page(payload: dict) -> str:
 <div class="product-grid">{cards_html}</div><h2>How we compared</h2><p>{esc(payload['methodology'])}</p>
 <h2>Limitations</h2><p>{esc(payload['limitations'])}</p>
 <p>We reviewed the candidates shown here; this is not a universal ranking or a hands-on product test.</p>
+<p><strong>Reader question:</strong> {esc(payload['primary_query'])}</p>
+<p><strong>Reader intent:</strong> {esc(payload['search_intent'])}</p>
 <p><a href="../../affiliate-disclosure.html">Read SBRP's affiliate disclosure</a></p></section></main>
 <footer class="site-footer container"><div><a class="brand footer-brand" href="../../index.html"><span class="brand-mark">S</span><span>SBRP</span></a>
 <p>Discover Trends. Validate Products. Grow Smarter.</p></div><div class="footer-links"><a href="../../about.html">About</a><a href="../../contact.html">Contact</a>
@@ -295,32 +303,54 @@ def update_sitemap(slugs: list[str]) -> bytes:
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
 
+def current_manifest() -> dict:
+    if not MANIFEST_PATH.exists():
+        return {"generated_by": MANIFEST_OWNER, "records": []}
+    existing = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    if not isinstance(existing, dict) or existing.get("generated_by") != MANIFEST_OWNER:
+        fail("Refusing to overwrite an unowned affiliate page manifest.")
+    records = existing.get("records")
+    if not isinstance(records, list):
+        fail("The generated affiliate page manifest has an invalid records list.")
+    for record in records:
+        if (not isinstance(record, dict)
+                or not all(isinstance(record.get(field), str) and record[field].strip()
+                           for field in ("slug", "title", "summary"))):
+            fail("The generated affiliate page manifest contains an invalid record.")
+    return existing
+
+
+def plan_outputs(payload: dict) -> list[tuple[Path, str]]:
+    manifest = current_manifest()
+    records = [item for item in manifest["records"] if item["slug"] != payload["slug"]]
+    records.append({"slug": payload["slug"], "title": payload["page_title"], "summary": payload["summary"]})
+    page_path = ARTICLE_DIR / f"{payload['slug']}.html"
+    index_path = ARTICLE_DIR / "index.html"
+    for path, description in ((page_path, "page"), (index_path, "index")):
+        if path.exists() and EXPORT_MARKER not in path.read_text(encoding="utf-8"):
+            fail(f"Refusing to overwrite unowned {description}: {path.relative_to(ROOT)}")
+    update_sitemap([item["slug"] for item in records])
+    targets = [page_path, index_path, MANIFEST_PATH, SITEMAP_PATH]
+    return [(path, "update" if path.exists() else "create") for path in targets]
+
+
 def publish_package(payload: dict) -> list[Path]:
+    outputs = plan_outputs(payload)
     ARTICLE_DIR.mkdir(parents=True, exist_ok=True)
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    manifest = {"generated_by": MANIFEST_OWNER, "records": []}
-    if MANIFEST_PATH.exists():
-        existing = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-        if not isinstance(existing, dict) or existing.get("generated_by") != MANIFEST_OWNER:
-            fail("Refusing to overwrite an unowned affiliate page manifest.")
-        manifest = existing
-    records = [item for item in manifest.get("records", []) if item.get("slug") != payload["slug"]]
+    manifest = current_manifest()
+    records = [item for item in manifest["records"] if item["slug"] != payload["slug"]]
     records.append({"slug": payload["slug"], "title": payload["page_title"], "summary": payload["summary"]})
     manifest["records"] = records
 
     page_path = ARTICLE_DIR / f"{payload['slug']}.html"
-    if page_path.exists() and EXPORT_MARKER not in page_path.read_text(encoding="utf-8"):
-        fail(f"Refusing to overwrite unowned page: {page_path.relative_to(ROOT)}")
     index_path = ARTICLE_DIR / "index.html"
-    if index_path.exists() and EXPORT_MARKER not in index_path.read_text(encoding="utf-8"):
-        fail("Refusing to overwrite unowned articles/affiliate/index.html.")
-
     sitemap_bytes = update_sitemap([item["slug"] for item in records])
     page_path.write_text(render_page(payload), encoding="utf-8")
     index_path.write_text(render_index(records), encoding="utf-8")
     MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     SITEMAP_PATH.write_bytes(sitemap_bytes)
-    return [page_path, index_path, MANIFEST_PATH, SITEMAP_PATH]
+    return [path for path, _action in outputs]
 
 
 def main() -> int:
@@ -330,12 +360,16 @@ def main() -> int:
     args = parser.parse_args()
     try:
         payload = validate_package(json.loads(args.input.read_text(encoding="utf-8")))
+        outputs = plan_outputs(payload)
         if not args.publish:
-            print("Approved package is valid. No files written; pass --publish to export.")
+            print("Approved package is valid. No files written; planned outputs:")
+            for path, action in outputs:
+                print(f"- {action}: {path.relative_to(ROOT)}")
+            print("Pass --publish to write these files.")
             return 0
-        outputs = publish_package(payload)
+        written = publish_package(payload)
         print("Exported approved affiliate page. Review before any deployment:")
-        for path in outputs:
+        for path in written:
             print(f"- {path.relative_to(ROOT)}")
         return 0
     except (OSError, json.JSONDecodeError, ValueError, TypeError) as exc:
