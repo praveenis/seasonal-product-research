@@ -18,7 +18,7 @@ Open `index.html` in a browser, or serve this folder with any static file server
 
 ## Data and publishing boundary
 
-Public demo content remains maintained in HTML. Phase 2 adds a separate, manually run exporter for records that have passed source and editorial review. The Python SQLite database, credentials, research history, and generated reports do not belong in this repository. Never export raw engine output or live records without checking their sources and obtaining editorial approval.
+Public demo content remains maintained in HTML. The Python SQLite database, credentials, private draft files, research history, and generated reports do not belong in this repository. Never export raw engine output or live records without checking their sources and obtaining editorial approval.
 
 ### Export approved research records
 
@@ -40,11 +40,34 @@ Public demo content remains maintained in HTML. Phase 2 adds a separate, manuall
 
 The schema is intentionally narrow. Every source URL must use HTTPS. All generated content is HTML-escaped, and outbound source links use `rel="noopener noreferrer"`. Search demand, listing counts, favorites, and social engagement must not be described as sales evidence. Prices, offers, product testing claims, and structured offer data remain out of scope until separately verified and editorially approved.
 
+### Create an approved affiliate recommendation page
+
+Affiliate comparison pages use a separate package and exporter from the non-commercial research briefs above. The app's affiliate-page workflow accepts owner-supplied product evidence and only offers an approved package for download after the owner records approval. That package is a handoff; it does not publish or deploy a page.
+
+1. Review the downloaded JSON package, its product sources, ratings, review counts, authorization status, and approval record.
+2. From this repository, validate it without writing public files:
+
+   ```powershell
+   python tools/export_affiliate_page.py C:\path\to\approved-affiliate-page.json
+   ```
+
+3. After the page and evidence are approved, explicitly create the local static artifacts:
+
+   ```powershell
+   python tools/export_affiliate_page.py C:\path\to\approved-affiliate-page.json --publish
+   ```
+
+   This writes the approved article page, generated comparison index/manifest, and sitemap entries. It does not deploy the site. Review every changed file and run the static preflight before a separate production release. Private drafts must remain outside this repository and its deploy root.
+
+The first workflow does not fetch retailer ratings or independently verify owner-entered evidence. Do not use Etsy favorites or search/listing popularity as ratings. Automated research requires a separately selected and authorized source.
+
 There are currently no retailer offers or affiliate links. If approved links are introduced later, verify the relevant retailer and affiliate program requirements first, label monetized links near the link, use appropriate `rel="sponsored nofollow"`, and use `target="_blank"` only with `rel="noopener noreferrer"`.
 
 ## Preview deployment and rollback
 
-No Cloudflare Pages configuration or deployment workflow is included yet. Configure a Pages preview from this repository and verify the preview URL, static asset paths, existing legal pages, `CNAME`, sitemap, and navigation before considering a production connection. This change does not switch DNS, connect a production deployment, or remove `CNAME`.
+Pull requests and pushes to `main` run a static preflight that checks required pages, local links/assets, `CNAME`, and sitemap targets. To create a hosted preview, connect this GitHub repository to a **separate Cloudflare Pages preview project** using Cloudflare's Git integration. Keep `sbrp.app` and all custom domains disconnected from that project. Configure branch controls to deploy review branches as previews, and protect the preview project's `pages.dev` hostname with Cloudflare Access if it should be private. Cloudflare's PR preview URL should be checked for static assets, legal pages, sitemap, and navigation before any production project or domain is considered.
+
+Cloudflare account access is required for the one-time project connection and preview URL verification. The repository workflow does not contain Cloudflare credentials and does not deploy or modify DNS. `CNAME` remains `sbrp.app` for the existing production site.
 
 For rollback after a future deployment, restore the previously working Pages deployment/revision and preserve the existing production DNS and custom-domain configuration. Do not change DNS as part of preview setup.
 
