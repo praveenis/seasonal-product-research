@@ -12,6 +12,7 @@ Open `index.html` in a browser, or serve this folder with any static file server
 - `catalog.html`: searchable five-record illustrative demo catalog.
 - `products/`: crawlable static demo product detail pages. Demo pages contain no retailer links, prices, reviews, or availability claims.
 - `guides/`: six original general buying guides and an index. General content is not product testing; product-specific material requires sourced editorial review before publication.
+- `seasons/`: shared seasonal gift-guide site for `https://seasons.sbrp.app/`. Each occasion has its own folder (currently `thanksgiving/`), while the site root owns shared navigation, `robots.txt`, and a sitemap spanning all published seasons. The root-site `CNAME` and root sitemap remain dedicated to `sbrp.app`.
 - `about.html`, `contact.html`, `affiliate-disclosure.html`: public information and disclosures.
 - Existing `google-ads.html`, `privacy-policy.html`, and `terms-of-service.html` are retained.
 - `sitemap.xml` and `robots.txt`: static crawl metadata.
@@ -70,6 +71,10 @@ Pull requests and pushes to `main` run a static preflight that checks required p
 Cloudflare account access is required for the one-time project connection and preview URL verification. The repository workflow does not contain Cloudflare credentials and does not deploy or modify DNS. `CNAME` remains `sbrp.app` for the existing production site.
 
 For rollback after a future deployment, restore the previously working Pages deployment/revision and preserve the existing production DNS and custom-domain configuration. Do not change DNS as part of preview setup.
+
+### Seasonal gift-guide deployment
+
+The `seasons/` directory is the output root for a separate static hosting project at `seasons.sbrp.app`. Each season is an independent folder under it (for example, `seasons/thanksgiving/`); shared site navigation and the site-level sitemap and robots file live at the `seasons/` root. Add the hostname to that hosting project's custom-domain settings and apply only the DNS records the provider specifies. Do not point the root SBRP project at this directory or change the root `CNAME`. Verify the seasonal hub, every published season page, and the existing root domain after deployment. Keep retailer ratings dated and recheck product details before publication.
 
 ## SEO and accessibility notes
 

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://seasons.sbrp.app/sitemap.xml
