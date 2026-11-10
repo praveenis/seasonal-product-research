@@ -20,6 +20,7 @@ THANKSGIVING_DIR = SEASONS_DIR / "thanksgiving"
 THANKSGIVING_REQUIRED_FILES = (
     "index.html", "host-gifts.html", "spouse-gifts.html", "grandparents-gifts.html",
     "kids-gifts-boys-5-10.html", "kids-gifts-girls-5-10.html", "styles.css",
+    "games/index.html", "movie-night/index.html", "recipes/index.html", "gratitude/index.html",
 )
 REQUIRED_FILES = (
     "index.html", "catalog.html", "about.html", "contact.html",
